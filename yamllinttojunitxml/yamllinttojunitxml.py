@@ -4,7 +4,7 @@ import xml.dom.minidom
 import xml.etree.cElementTree as ET
 
 
-LINE_REGEX = re.compile(r"^(.*?):(\d+?):\s(.*)$")
+LINE_REGEX = re.compile(r"^(.*?):(\d+?:\d+?): \[([a-z]+?)\]\s(.*)$")
 
 
 def get_input():
@@ -14,11 +14,11 @@ def get_input():
 
 
 def parse_lint_line(lint_line):
-    """Parse an ansible lint line and extract fields filename, line, lint error
+    """Parse an yaml lint line and extract fields filename, line, lint error
     """
     match = LINE_REGEX.match(lint_line)
 
-    return (match.group(1), match.group(2), match.group(3))
+    return (match.group(1), match.group(2), match.group(3), match.group(4))
 
 
 def prettify(elem):
@@ -34,7 +34,7 @@ def lint_to_junit_xml(lint_output):
     """
     testsuite = ET.Element(
         "testsuite",
-        name="ansible-lint",
+        name="yaml-lint",
         tests=str(len(lint_output)),
         errors=str(len(lint_output)),
     )
@@ -45,29 +45,28 @@ def lint_to_junit_xml(lint_output):
         return testsuite
 
     for line in lint_output:
-        filename, linenr, lint_error = parse_lint_line(line)
+        filename, linenr, lint_exception_type, lint_exception_text = parse_lint_line(line)
 
-        # TODO get lint error full description from ansible-lint
         error_description = """
-        ansible-lint error: {0}
-        ansible-lint error description: {0}
-        filename: {1}
-        line nr: {2}
+yaml-lint exception type: {0}
+yaml-lint exception description: {1}
+filename: {2}
+line nr: {3}
         """.format(
-            lint_error, filename, linenr
+            lint_exception_type, lint_exception_text, filename, linenr
         )
 
-        testcase = ET.SubElement(testsuite, "testcase", name=lint_error)
+        testcase = ET.SubElement(testsuite, "testcase", name=lint_exception_text)
         ET.SubElement(
-            testcase, "failure", message=line, type="ansible-lint"
+            testcase, "failure", message=line, type="yaml-lint"
         ).text = error_description
     return testsuite
 
 
 def main():
-    ansible_lint_output = get_input()
+    yaml_lint_output = get_input()
 
-    testsuites = lint_to_junit_xml(ansible_lint_output)
+    testsuites = lint_to_junit_xml(yaml_lint_output)
 
     parsed_lines_xml = prettify(testsuites)
     print(parsed_lines_xml)

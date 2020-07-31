@@ -1,85 +1,73 @@
 =============================
-Ansible Lint to jUnit XML
+Yaml Lint to jUnit XML
 =============================
 
-.. image:: https://badge.fury.io/py/ansible-lint-to-junit-xml.png
-    :target: http://badge.fury.io/py/ansible-lint-to-junit-xml
+Convert yaml-lint outputs to a jUnit valid xml tests result file.
 
-.. image:: https://travis-ci.org/andreferreirav2/ansible-lint-to-junit-xml.png?branch=master
-    :target: https://travis-ci.org/andreferreirav2/ansible-lint-to-junit-xml
+Thanks to the author of the original project `ansible-lint-to-junit-xml <https://github.com/andreferreirav2/ansible-lint-to-junit-xml>`_
 
-Convert ansible-lint outputs to a jUnit valid xml tests result file.
 
 Quickstart
 ----------
 
-Install ``ansible-lint-to-junit-xml`` in your preferred Python env
+Installation by pip is not working yet (TODO)
+
+You can simply get this repo and install with setup.py
+
+
+Usage
+----------
+
+Run ``yamllint`` on the desired files and pipe to ``yaml-lint-to-junit-xml``
 
 .. code-block:: bash
 
-    pip install ansible-lint-to-junit-xml
+    yamllint -f parsable <file or directly> | yaml-lint-to-junit-xml > results/yaml-lint-results.xml
 
-Run ``ansible-lint`` on the desired files and pipe to ``ansible-lint-to-junit-xml``
-
-.. code-block:: bash
-
-    ansible-lint -q -p <file or directly> | ansible-lint-to-junit-xml > results/ansible-lint-results.xml
-
-Alternatively you can run ``ansible-lint`` separately from ``ansible-lint-to-junit-xml`` and use a file to pass the output
+Alternatively you can run ``yamllint`` separately from ``yaml-lint-to-junit-xml`` and use a file to pass the output
 
 .. code-block:: bash
 
-    ansible-lint -q -p <file or directly> > ansible-lint-results.txt
-    ansible-lint-to-junit-xml ansible-lint-results.txt > results/ansible-lint-results.xml
+    yamllint -f parsable <file or directly> > yaml-lint-results.txt
+    yaml-lint-to-junit-xml yaml-lint-results.txt > results/yaml-lint-results.xml
 
 
-**Note:** ``ansible-lint`` must run with ``-p`` for the output to be machine parsable
+**Note:** ``yamllint`` must run with ``-f parsable`` for the output to be machine parsable
 
 Features
 --------
 
-* Pipe output directly from ``ansible-lint`` call
+* Pipe output directly from ``yamllint`` call
 * Output XML file is compliant with `jenkins junit5 Schema <https://github.com/junit-team/junit5/blob/master/platform-tests/src/test/resources/jenkins-junit.xsd/>`_.
-* Built using `Nekroze/cookiecutter-pypackage <https://github.com/Nekroze/cookiecutter-pypackage/>`_
-* This project appeared as an alternative to `wasilak's ansible-lint-junit <https://github.com/wasilak/ansible-lint-junit/>`_.
 
 Example
 -------------
 
-Running ``ansible-lint`` on a file results in:
+Running ``yamllint`` on a file results in:
 ::  
+    roles/test_role/defaults/main.yml:25:121: [warning] line too long (157 > 120 characters) (line-length)
+    roles/test_role/tasks/main.yml:33:35: [error] no new line character at the end of file (new-line-at-end-of-file)
+    test_playbook.yml:4:8: [warning] truthy value should be one of [False, True, false, true] (truthy)
 
-    playbooks/test_playbook.yml:41: [E303] curl used in place of get_url or uri module
-    playbooks/tasks/example_task.yml:28: [E601] Don't compare to literal True/False
-
-Running ``ansible-lint`` and piping the output to ``ansible-lint-to-junit-xml`` looks line this:
+Running ``yamllint`` and piping the output to ``yaml-lint-to-junit-xml`` looks line this:
 
 .. code-block:: bash
 
-    ansible-lint -q -p playbooks/test_playbook.yml | ansible-lint-to-junit-xml
+    yamllint -f parsable test_playbook.yml | yaml-lint-to-junit-xml
 
 Would result in:
 
 .. code-block:: xml
 
     <?xml version="1.0" ?>
-    <testsuites>
-        <testsuite errors="2" name="ansible-lint" tests="2">
-            <testcase name="[E303] curl used in place of get_url or uri module">
-                <failure message="playbooks/test_playbook.yml:41: [E303] curl used in place of get_url or uri module" type="ansible-lint">
-                ansible-lint error: [E303] curl used in place of get_url or uri module
-                ansible-lint error description: [E303] curl used in place of get_url or uri module
-                filename: playbooks/test_playbook.yml
-                line nr: 41
-                </failure>
+    <testsuite errors="1" name="yaml-lint" tests="1">
+            <testcase name="truthy value should be one of [False, True, false, true] (truthy)">
+                    <failure message="test_playbook.yml:4:8: [warning] truthy value should be one of [False, True, false, true] (truthy)" type="yaml-lint">
+    yaml-lint exception type: warning
+    yaml-lint exception description: truthy value should be one of [False, True, false, true] (truthy)
+    filename: test_playbook.yml
+    line nr: 4:8
+            </failure>
             </testcase>
-            <testcase name="[E601] Don't compare to literal True/False">
-                <failure message="playbooks/tasks/example_task.yml:28: [E601] Don't compare to literal True/False" type="ansible-lint">
-                ansible-lint error: [E601] Don't compare to literal True/False
-                ansible-lint error description: [E601] Don't compare to literal True/False
-                filename: playbooks/tasks/example_task.yml
-                line nr: 28
-                </failure>
-            </testcase>
-        </testsuite>
-    </testsuites>
+    </testsuite>
+

@@ -9,38 +9,28 @@ except ImportError:
     from distutils.core import setup
 
 
-if sys.argv[-1] == "publish":
-    os.system("python setup.py sdist upload")
-    sys.exit()
-
 readme = open("README.rst").read()
-doclink = """
-Documentation
--------------
-
-The full documentation is at http://ansible-lint-to-junit-xml.rtfd.org."""
-history = open("HISTORY.rst").read().replace(".. :changelog:", "")
 
 setup(
-    name="ansible-lint-to-junit-xml",
+    name="yaml-lint-to-junit-xml",
     version="0.1.0",
-    description="Convert ansible-lint outputs to a jUnit valid xml tests result file",
-    long_description=readme + "\n\n" + doclink + "\n\n" + history,
-    author="Andre Ferreira",
-    author_email="andre.ferreira.v2@gmail.com",
-    url="https://github.com/andreferreirav2/ansible-lint-to-junit-xml",
-    packages=["ansiblelinttojunitxml"],
-    package_dir={"ansible-lint-to-junit-xml": "ansiblelinttojunitxml"},
+    description="Convert yaml-lint outputs to a jUnit valid xml tests result file",
+    long_description=readme,
+    author="Denis Shipilov",
+    author_email="shipilovds@gmail.com",
+    url="https://github.com/shipilovds/yaml-lint-to-junit-xml",
+    packages=["yamllinttojunitxml"],
+    package_dir={"yaml-lint-to-junit-xml": "yamllinttojunitxml"},
     include_package_data=True,
     entry_points={
         "console_scripts": [
-            "ansible-lint-to-junit-xml = ansiblelinttojunitxml.ansiblelinttojunitxml:main"
+            "yaml-lint-to-junit-xml = yamllinttojunitxml.yamllinttojunitxml:main"
         ]
     },
     install_requires=[],
     license="MIT",
     zip_safe=False,
-    keywords=["ansible", "lint", "junit", "report"],
+    keywords=["yaml", "lint", "junit", "report"],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Developers",
