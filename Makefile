@@ -20,3 +20,9 @@ clean-pyc:
 lint:
 	flake8 yaml-lint-to-junit-xml test
 
+dist: clean
+	python3 setup.py sdist bdist_wheel
+	python3 -m twine check dist/*
+
+release: dist
+	python3 -m twine upload --non-interactive dist/*

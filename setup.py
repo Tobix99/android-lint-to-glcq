@@ -9,13 +9,14 @@ except ImportError:
     from distutils.core import setup
 
 
-readme = open("README.rst").read()
+readme = open("README.md").read()
 
 setup(
     name="yaml-lint-to-junit-xml",
-    version="0.1.0",
+    version="0.1.1",
     description="Convert yaml-lint outputs to a jUnit valid xml tests result file",
     long_description=readme,
+    long_description_content_type='text/markdown',
     author="Denis Shipilov",
     author_email="shipilovds@gmail.com",
     url="https://github.com/shipilovds/yaml-lint-to-junit-xml",
