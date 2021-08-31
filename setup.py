@@ -13,7 +13,7 @@ readme = open("README.md").read()
 
 setup(
     name="android-lint-to-glcq",
-    version="0.1.2",
+    version="0.1.3",
     description="Convert android gradle lint outputs to a GitLab valid json code quality result file",
     long_description=readme,
     long_description_content_type='text/markdown',

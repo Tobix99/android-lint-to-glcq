@@ -43,7 +43,6 @@ def parse_xml(xml_gradle_file, prefix):
     for i in guaranteed_list(xml_to_dict['issues']['issue']):
 
         path = guaranteed_first(i['location'])['@file']
-        print(path)
         cleared_path = clear_file_path(path=path, prefix=prefix)
 
         issue = {
