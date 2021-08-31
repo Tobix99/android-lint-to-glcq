@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 7.0.1">
+
+    <issue
+        id="FragmentTagUsage"
+        severity="Warning"
+        message="Replace the &lt;fragment> tag with FragmentContainerView."
+        category="Correctness"
+        priority="5"
+        summary="Use FragmentContainerView instead of the &lt;fragment> tag"
+        explanation="FragmentContainerView replaces the &lt;fragment> tag as the preferred                 way of adding fragments via XML. Unlike the &lt;fragment> tag, FragmentContainerView                 uses a normal `FragmentTransaction` under the hood to add the initial fragment,                 allowing further FragmentTransaction operations on the FragmentContainerView                 and providing a consistent timing for lifecycle events."
+        url="https://developer.android.com/reference/androidx/fragment/app/FragmentContainerView.html"
+        urls="https://developer.android.com/reference/androidx/fragment/app/FragmentContainerView.html"
+        errorLine1="        &lt;fragment"
+        errorLine2="         ~~~~~~~~">
+        <location
+            file="/Users/vlad/StudioProjects/Company/fleet/app/src/main/res/layout/activity_main.xml"
+            line="13"
+            column="10"/>
+    </issue>
+
+</issues>

@@ -18,7 +18,7 @@ clean-pyc:
 	find . -name '*~' -exec rm -f {} +
 
 lint:
-	flake8 android-lint-to-junit-xml test
+	flake8 android-lint-to-glcq test
 
 dist: clean
 	python3 setup.py sdist bdist_wheel

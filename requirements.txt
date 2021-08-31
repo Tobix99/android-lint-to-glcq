@@ -1,1 +1,5 @@
 wheel>=0.22
+
+setuptools~=57.0.0
+
+xmltodict~=0.12.0

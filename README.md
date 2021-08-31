@@ -1,17 +1,18 @@
-# Android Lint to jUnit XML
+# Android Lint to Gitlab Code Quality Report
 
-[![PyPI version](https://badge.fury.io/py/yaml-lint-to-junit-xml.svg)](https://badge.fury.io/py/yaml-lint-to-junit-xml)
+[![PyPI version](https://badge.fury.io/py/android-lint-to-glcq.svg)](https://badge.fury.io/py/android-lint-to-glcq)
 
-Convert android gradle lint outputs to a jUnit valid xml tests result file.
+Convert android gradle lint outputs to a GitLab valid json code quality result file.
 
-Thanks to the author of the original project [ansible-lint-to-junit-xml](https://github.com/andreferreirav2/ansible-lint-to-junit-xml) 
+Thanks to the author of the original
+project [ansible-lint-to-junit-xml](https://github.com/andreferreirav2/ansible-lint-to-junit-xml)
 and to author of yaml-lint fork [yaml-lint-to-junit-xml](https://github.com/shipilovds/yaml-lint-to-junit-xml)
 
 ## Quickstart
 
-Install `android-lint-to-junit-xml` with pip:
+Install `android-lint-to-glcq` with pip:
 
-    pip install android-lint-to-junit-xml
+    pip install android-lint-to-glcq
 
 Or you can simply get this repo and install with setup.py
 
@@ -19,37 +20,68 @@ Or you can simply get this repo and install with setup.py
 
 Run `./gradlew :app:lintDebug` and use a file to pass the output
 
-    ./gradlew -Pci --console=plain :app:lintDebug
-    android-lint-to-junit-xml lint-results-debug.xml > results/android-lint-results.xml
+    ./gradlew :app:lintDebug
+    android-lint-to-glcq <relative path to lint xml report> <absolute path to project root> > <output file>
 
 ## Features
 
--   Output XML file is compliant with [jenkins junit5 Schema](https://github.com/junit-team/junit5/blob/master/platform-tests/src/test/resources/jenkins-junit.xsd/). And maybe with [gitlab junit5 schema](https://www.ibm.com/docs/en/adfz/developer-for-zos/14.1.0?topic=formats-junit-xml-format), so you can use it to artifact as report
-## Example (replace me!)
+- Output JSON file is compliant
+  with [gitlab code quality schema](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#implementing-a-custom-tool)
+  , so you can use it to artifact as report
 
-Running `yamllint` on a file results in:
+## Example
 
-    roles/test_role/defaults/main.yml:25:121: [warning] line too long (157 > 120 characters) (line-length)
-    roles/test_role/tasks/main.yml:33:35: [error] no new line character at the end of file (new-line-at-end-of-file)
-    test_playbook.yml:4:8: [warning] truthy value should be one of [False, True, false, true] (truthy)
+Running `./gradlew :app:lintDebug` on my Android project results in:
 
-Running `yamllint` and piping the output to `yaml-lint-to-junit-xml` looks line this:
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 7.0.1">
 
-    yamllint -f parsable test_playbook.yml | yaml-lint-to-junit-xml
+    <issue
+        id="FragmentTagUsage"
+        severity="Warning"
+        message="Replace the &lt;fragment> tag with FragmentContainerView."
+        category="Correctness"
+        priority="5"
+        summary="Use FragmentContainerView instead of the &lt;fragment> tag"
+        explanation="FragmentContainerView replaces the &lt;fragment> tag as the preferred                 way of adding fragments via XML. Unlike the &lt;fragment> tag, FragmentContainerView                 uses a normal `FragmentTransaction` under the hood to add the initial fragment,                 allowing further FragmentTransaction operations on the FragmentContainerView                 and providing a consistent timing for lifecycle events."
+        url="https://developer.android.com/reference/androidx/fragment/app/FragmentContainerView.html"
+        urls="https://developer.android.com/reference/androidx/fragment/app/FragmentContainerView.html"
+        errorLine1="        &lt;fragment"
+        errorLine2="         ~~~~~~~~">
+        <location
+            file="/Users/vlad/StudioProjects/Company/fleet/app/src/main/res/layout/activity_main.xml"
+            line="13"
+            column="10"/>
+    </issue>
+
+</issues>
+```
+
+Running `android-lint-to-glcq` on gradle lint outputs looks line this:
+
+    ./gradlew :app:lintDebug
+    android-lint-to-glcq app/lint/reports/lint-results-debug.xml /Users/vlad/StudioProjects/Company/fleet/ > results/android-lint-results.xml
 
 Would result in:
 
 ```
-<?xml version="1.0" ?>
-<testsuite errors="1" name="yaml-lint" tests="1">
-        <testcase name="truthy value should be one of [False, True, false, true] (truthy)">
-                <failure message="test_playbook.yml:4:8: [warning] truthy value should be one of [False, True, false, true] (truthy)" type="yaml-lint">
-yaml-lint exception type: warning
-yaml-lint exception description: truthy value should be one of [False, True, false, true] (truthy)
-filename: test_playbook.yml
-line nr: 4:8
-        </failure>
-        </testcase>
-</testsuite>
+[
+  {
+    "description": "Use FragmentContainerView instead of the <fragment> tag",
+    "severity": "major",
+    "fingerprint": "f753a37f26e791db8d499657e23f9caa",
+    "location": {
+      "path": "fleet/app/src/main/res/layout/activity_main.xml",
+      "lines": {
+        "begin": "13"
+      }
+    }
+  }
+]
 ```
+
+And final result:
+
+![result](gitlab.png)
 
