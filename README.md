@@ -1,39 +1,31 @@
-# Yaml Lint to jUnit XML
+# Android Lint to jUnit XML
 
 [![PyPI version](https://badge.fury.io/py/yaml-lint-to-junit-xml.svg)](https://badge.fury.io/py/yaml-lint-to-junit-xml)
 
-Convert yaml-lint outputs to a jUnit valid xml tests result file.
+Convert android gradle lint outputs to a jUnit valid xml tests result file.
 
-Thanks to the author of the original project [ansible-lint-to-junit-xml](https://github.com/andreferreirav2/ansible-lint-to-junit-xml)
+Thanks to the author of the original project [ansible-lint-to-junit-xml](https://github.com/andreferreirav2/ansible-lint-to-junit-xml) 
+and to author of yaml-lint fork [yaml-lint-to-junit-xml](https://github.com/shipilovds/yaml-lint-to-junit-xml)
 
 ## Quickstart
 
-Install `ansible-lint-to-junit-xml` with pip:
+Install `android-lint-to-junit-xml` with pip:
 
-    pip install yaml-lint-to-junit-xml
+    pip install android-lint-to-junit-xml
 
 Or you can simply get this repo and install with setup.py
 
 ## Usage
 
-Run `yamllint` on the desired files and pipe to `yaml-lint-to-junit-xml`
+Run `./gradlew :app:lintDebug` and use a file to pass the output
 
-    yamllint -f parsable <file or directly> | yaml-lint-to-junit-xml > results/yaml-lint-results.xml
-
-Alternatively you can run `yamllint` separately from `yaml-lint-to-junit-xml` and use a file to pass the output
-
-
-    yamllint -f parsable <file or directly> > yaml-lint-results.txt
-    yaml-lint-to-junit-xml yaml-lint-results.txt > results/yaml-lint-results.xml
-
-> **Note:** `yamllint` must run with `-f parsable` for the output to be machine parsable
+    ./gradlew -Pci --console=plain :app:lintDebug
+    android-lint-to-junit-xml lint-results-debug.xml > results/android-lint-results.xml
 
 ## Features
 
--   Pipe output directly from `yamllint` call
--   Output XML file is compliant with [jenkins junit5 Schema](https://github.com/junit-team/junit5/blob/master/platform-tests/src/test/resources/jenkins-junit.xsd/).
-
-## Example
+-   Output XML file is compliant with [jenkins junit5 Schema](https://github.com/junit-team/junit5/blob/master/platform-tests/src/test/resources/jenkins-junit.xsd/). And maybe with [gitlab junit5 schema](https://www.ibm.com/docs/en/adfz/developer-for-zos/14.1.0?topic=formats-junit-xml-format), so you can use it to artifact as report
+## Example (replace me!)
 
 Running `yamllint` on a file results in:
 

@@ -3,7 +3,6 @@ import re
 import xml.dom.minidom
 import xml.etree.cElementTree as ET
 
-
 LINE_REGEX = re.compile(r"^(.*?):(\d+?:\d+?): \[([a-z]+?)\]\s(.*)$")
 
 
@@ -18,7 +17,7 @@ def parse_lint_line(lint_line):
     """
     match = LINE_REGEX.match(lint_line)
 
-    return (match.group(1), match.group(2), match.group(3), match.group(4))
+    return match.group(1), match.group(2), match.group(3), match.group(4)
 
 
 def prettify(elem):
