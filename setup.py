@@ -28,7 +28,7 @@ setup(
             "android-lint-to-glcq = androidllinttoglqc.androidllinttoglqc:main"
         ]
     },
-    install_requires=[],
+    install_requires=["xmltodict~=0.12.0"],
     license="MIT",
     zip_safe=False,
     keywords=["android", "lint", "gitlab", "report", "gradle"],

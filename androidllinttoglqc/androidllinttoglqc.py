@@ -41,24 +41,24 @@ def parse_xml(xml_gradle_file, prefix):
     xml_to_dict = xmltodict.parse(to_string)
 
     for i in guaranteed_list(xml_to_dict['issues']['issue']):
-
-        path = guaranteed_first(i['location'])['@file']
-        cleared_path = clear_file_path(path=path, prefix=prefix)
-
-        issue = {
-            "description": i['@summary'],
-            "severity": severity_from_priority(int(i['@priority'])),
-            "fingerprint": hashlib.md5((i['@summary'] + cleared_path).encode('utf-8')).hexdigest(),
-            "location": {
-                "path": cleared_path,
-            }
-        }
-
         if '@line' in i['location']:
-            issue["location"]["lines"] = {
-                "begin": i['location']['@line']
+            path = guaranteed_first(i['location'])['@file']
+            cleared_path = clear_file_path(path=path, prefix=prefix)
+
+            issue = {
+                "description": i['@summary'],
+                "check_name": i['@category'],
+                "severity": severity_from_priority(int(i['@priority'])),
+                "fingerprint": hashlib.md5((i['@summary'] + cleared_path + i['location'].get("@line", "0") + i['@priority']).encode('utf-8')).hexdigest(),
+                "location": {
+                    "path": cleared_path,
+                }
             }
-        data.append(issue)
+
+            issue["location"]["lines"] = {
+                "begin": int(i['location']['@line'])
+            }
+            data.append(issue)
 
     return json.dumps(data)
 
